@@ -57,7 +57,24 @@ resource "aws_instance" "server" {
   instance_type = var.instance_type
 
   vpc_security_group_ids = [aws_security_group.server_sg.id]
-
+  user_data = <<-EOF
+  #!/bin/bash
+  # Install your Python environment
+  apt-get update -y
+  apt-get install -y python3.14-venv
+  python3.14 -m venv venv
+  source venv/bin/activate
+  
+  # Clon the latest app directly onto the server
+  git clone https://github.com/your-account/your-repo.git
+  cd your-repo
+  pip install -r requirements.txt
+  
+  # Run Uvicorn on port 80 bound to all interfaces
+  uvicorn main:app --host 0.0.0.0 --port 80
+  EOF
+  
+  
   tags = {
     Name = var.instance_name
   }
