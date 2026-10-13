@@ -66,7 +66,7 @@ resource "aws_instance" "server" {
   source venv/bin/activate
   
   # Clon the latest app directly onto the server
-  git clone https://github.com/your-account/your-repo.git
+  https://github.com/Greg680/Crud-App.git
   cd your-repo
   pip install -r requirements.txt
   
