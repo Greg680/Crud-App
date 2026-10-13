@@ -67,7 +67,7 @@ resource "aws_instance" "server" {
   
   # Clon the latest app directly onto the server
   https://github.com/Greg680/Crud-App.git
-  cd Crud-App/backend
+  cd Crud-App
   pip install -r requirements.txt
   
   # Run Uvicorn on port 80 bound to all interfaces
