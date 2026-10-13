@@ -1063,3 +1063,5 @@ INFO:root:CREATE : name='Silvana' description='Poisn by antivaric drugs, inc scl
 INFO:root:CREATE : name='Cesya' description='Laceration of ovary, unspecified' 
 INFO:root:READ ALL : skip=0 limit=100
 INFO:root:READ ALL : skip=0 limit=100
+INFO:root:READ ALL : skip=0 limit=100
+INFO:root:READ ALL : skip=0 limit=100
