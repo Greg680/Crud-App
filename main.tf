@@ -29,8 +29,8 @@ resource "aws_security_group" "server_sg" {
 
   ingress {
     description = "HTTP traffic"
-    from_port   = var.app_port
-    to_port     = var.app_port
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -56,13 +56,25 @@ resource "aws_instance" "server" {
   ami           = data.aws_ssm_parameter.ubuntu_ami.value
   instance_type = var.instance_type
 
-  # Add security group
   vpc_security_group_ids = [aws_security_group.server_sg.id]
+  user_data = <<-EOF
+  #!/bin/bash
+  # Install your Python environment
+  apt-get update -y
+  apt-get install -y python3.14-venv
+  python3.14 -m venv venv
+  source venv/bin/activate
+  
+  # Clon the latest app directly onto the server
+  https://github.com/Greg680/Crud-App.git
+  git clone https://github.com/Greg680/Crud-App.git
+  cd Crud-App
+  pip install -r requirements.txt
+  
+  # Run Uvicorn on port 80 bound to all interfaces
+  uvicorn main:app --host 0.0.0.0 --port 80
+  EOF
 
-  # Inject startup scripts
-  user_data = templatefile("user_data.tpl", {
-    app_port = var.app_port
-  }) 
 
   tags = {
     Name = var.instance_name
@@ -77,6 +89,6 @@ resource "aws_eip" "server_eip" {
 
 # Output the public IP address
 output "public_ip" {
-  value       = "http://${aws_eip.server_eip.public_ip}:${var.app_port}/"
+  value       = "${aws_instance.server.public_ip}"
   description = "The public IP of your application"
 }
